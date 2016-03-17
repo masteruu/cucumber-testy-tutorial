@@ -1,40 +1,61 @@
 package org.fasttrackit.onlinelibrary.login;
 
+
 import com.sdl.selenium.web.WebLocator;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import org.fasttrackit.onlinelibrary.view.LoginView;
-import org.fasttrackit.onlinelibrary.view.TopMenuNavigationView;
+import com.sdl.selenium.web.utils.Utils;
+
+import org.apache.xpath.SourceTree;
 import org.fasttrackit.util.TestBase;
-import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 public class LoginSteps extends TestBase {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoginSteps.class);
-    
-    private TopMenuNavigationView topMenuNavigation = new TopMenuNavigationView();
-    private LoginView loginView = new LoginView();
 
-    @When("^I click on Login button from top navigation menu$")
-    public void I_click_on_Login_button_from_top_navigation_menu() {
-        topMenuNavigation.loginButton.assertClick();
-    }
-    
-    @When("^I login using \"([^\"]*)\"/\"([^\"]*)\"$")
-    public void I_login_using(String user, String password) {
-        loginView.login(user, password);
+    @Test
+    public void validLoginTest() {
+        driver.get("https://rawgit.com/sdl/Testy/master/src/test/functional/app-demo/login.html");
+        WebElement emailField = driver.findElement(By.id("email"));
+        emailField.sendKeys("eu@fast.com");
+
+        WebElement passField = driver.findElement(By.name("password"));
+        passField.sendKeys("eu.pass");
+
+        WebElement loginBtn = driver.findElement(By.className("btn"));
+        loginBtn.click();
+
+        WebElement prefButton = driver.findElement(By.xpath("//nav//button"));
+        prefButton.click();
+
+        try {
+            Thread.sleep(300);                 //1000 milliseconds is one second.
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+
+        WebElement oldpass = driver.findElement(By.xpath("//div[@id='preferences-win']//input[@name='password']"));
+        oldpass.sendKeys("eu.pass");
+
+        WebElement newpass = driver.findElement(By.xpath("//input[@name='newPassword']"));
+        newpass.sendKeys("eu.pass2");
+
+        WebElement reppass = driver.findElement(By.xpath("//input[@name='newPasswordRepeat']"));
+        reppass.sendKeys("eu.pass2");
+
+        WebElement save = driver.findElement(By.cssSelector("#preferences-win button.btn-warning"));
+        save.click();
+
+        WebElement status = driver.findElement(By.cssSelector(".status-msg"));
+        assertThat(status.getText(), is ("Your password has been successfully changed."));
+
     }
 
-    @Then("^I click on fake Password field$")
-    public void fakePasswordClick() {
-        loginView.fakePasswordField.assertClick();
-    }
-    
-    @Then("^login should fail$")
-    public void loginShouldFail() {
-        WebLocator error = new WebLocator().setTag("strong").setText("Error:");
-        boolean ready = error.ready();
-        Assert.assertTrue("Element is not found : " + error, ready);
-    }
+
+
+
 }
