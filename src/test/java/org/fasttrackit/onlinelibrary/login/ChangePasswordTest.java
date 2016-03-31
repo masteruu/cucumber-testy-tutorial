@@ -1,7 +1,7 @@
 package org.fasttrackit.onlinelibrary.login;
 
 
-import org.fasttrackit.exemple.ChangePasswordPage;
+import org.fasttrackit.example.ChangePasswordView;
 import org.fasttrackit.exemple.LoginPage;
 import org.fasttrackit.exemple.NavigationBarPage;
 import org.fasttrackit.util.TestBase;
@@ -16,12 +16,12 @@ import static org.hamcrest.core.Is.is;
 public class ChangePasswordTest extends TestBase {
 
     private LoginPage loginPage;
-    private ChangePasswordPage changePasswordPage;
+    private ChangePasswordView changePasswordPage = new ChangePasswordView();
     private NavigationBarPage navigatorBarPage;
 
     public ChangePasswordTest() {
         loginPage = PageFactory.initElements(driver, LoginPage.class);
-        changePasswordPage = PageFactory.initElements(driver, ChangePasswordPage.class);
+
         navigatorBarPage = PageFactory.initElements(driver, NavigationBarPage.class);
     }
 
